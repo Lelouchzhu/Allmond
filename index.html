@@ -1,0 +1,1570 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f7f4">
+  <meta name="color-scheme" content="light">
+  <title>围手术期连续监测 Dashboard</title>
+  <style>
+    :root {
+      --ink: #17342f;
+      --muted: #62746f;
+      --paper: #ffffff;
+      --canvas: #f2f5f2;
+      --line: #dfe8e3;
+      --green: #167a5b;
+      --green-soft: #e5f4ed;
+      --orange: #c76a16;
+      --orange-soft: #fff0df;
+      --red: #bd3b3b;
+      --red-soft: #fde9e7;
+      --blue: #3978a8;
+      --blue-soft: #e8f2f9;
+      --shadow: 0 12px 38px rgba(26, 56, 48, .08);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background:
+        radial-gradient(circle at 90% -5%, rgba(142, 190, 162, .26), transparent 30rem),
+        var(--canvas);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input, select { font: inherit; }
+    button { touch-action: manipulation; }
+
+    .shell {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      padding: 18px 14px calc(92px + env(safe-area-inset-bottom));
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 26px 22px;
+      border: 1px solid rgba(255, 255, 255, .8);
+      border-radius: 28px;
+      background: linear-gradient(135deg, #143b31, #21634f 62%, #328065);
+      color: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 230px;
+      height: 230px;
+      right: -90px;
+      top: -110px;
+      border: 44px solid rgba(255, 255, 255, .08);
+      border-radius: 50%;
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      color: rgba(255, 255, 255, .72);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      font-size: clamp(25px, 7vw, 42px);
+      line-height: 1.15;
+      letter-spacing: -.02em;
+    }
+
+    .hero-sub {
+      position: relative;
+      z-index: 1;
+      margin: 10px 0 22px;
+      max-width: 720px;
+      color: rgba(255, 255, 255, .8);
+      font-size: 14px;
+    }
+
+    .hero-meta {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .12);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 650;
+      backdrop-filter: blur(8px);
+    }
+
+    .notice {
+      display: flex;
+      gap: 11px;
+      align-items: flex-start;
+      margin-top: 12px;
+      padding: 13px 15px;
+      border: 1px solid #f1d8b7;
+      border-radius: 16px;
+      background: #fff8ec;
+      color: #6e4a1d;
+      font-size: 12px;
+    }
+
+    .notice strong { display: block; font-size: 13px; }
+    .notice-icon { font-size: 18px; line-height: 1.2; }
+
+    .section {
+      margin-top: 26px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 14px;
+      margin: 0 3px 12px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+      letter-spacing: -.02em;
+    }
+
+    .section-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .status-card {
+      position: relative;
+      min-height: 142px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 19px;
+      background: var(--paper);
+      box-shadow: 0 7px 24px rgba(26, 56, 48, .045);
+      text-align: left;
+    }
+
+    button.status-card {
+      width: 100%;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    button.status-card:active { transform: translateY(1px); }
+
+    .status-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 22px;
+      width: 4px;
+      height: 38px;
+      border-radius: 0 6px 6px 0;
+      background: var(--level-color);
+    }
+
+    .status-card.red { --level-color: var(--red); }
+    .status-card.orange { --level-color: var(--orange); }
+    .status-card.green { --level-color: var(--green); }
+    .status-card.blue { --level-color: var(--blue); }
+
+    .status-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .status-name {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .level {
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--level-color) 12%, white);
+      color: var(--level-color);
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .status-value {
+      margin-top: 15px;
+      font-size: clamp(21px, 6vw, 30px);
+      font-weight: 760;
+      line-height: 1.05;
+      letter-spacing: -.035em;
+    }
+
+    .status-unit {
+      margin-left: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    .status-note {
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .chart-panel { padding: 16px 14px 14px; }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      margin-bottom: 11px;
+    }
+
+    .chip-row {
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      padding: 1px 1px 4px;
+      scrollbar-width: none;
+    }
+
+    .chip-row::-webkit-scrollbar { display: none; }
+
+    .chip {
+      flex: 0 0 auto;
+      min-height: 36px;
+      padding: 7px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .chip[aria-pressed="true"] {
+      border-color: var(--green);
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .range-row {
+      display: inline-grid;
+      grid-template-columns: repeat(3, 1fr);
+      width: 100%;
+      padding: 3px;
+      border-radius: 13px;
+      background: #edf1ee;
+    }
+
+    .range-btn {
+      min-height: 34px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .range-btn[aria-pressed="true"] {
+      background: #fff;
+      color: var(--ink);
+      box-shadow: 0 2px 10px rgba(26, 56, 48, .08);
+    }
+
+    .chart-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin: 7px 3px 0;
+    }
+
+    .chart-title {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .chart-subtitle {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .chart-delta {
+      text-align: right;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .chart-delta strong {
+      display: block;
+      color: var(--green);
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .chart-wrap {
+      position: relative;
+      min-height: 282px;
+      margin-top: 8px;
+      border-radius: 15px;
+      background: linear-gradient(180deg, #fbfdfc, #f6f9f7);
+      overflow: hidden;
+    }
+
+    #trendChart {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 282px;
+    }
+
+    .chart-tooltip {
+      position: absolute;
+      z-index: 3;
+      display: none;
+      width: max-content;
+      max-width: 190px;
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .96);
+      color: var(--ink);
+      box-shadow: var(--shadow);
+      pointer-events: none;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 10px 4px 0;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+    .legend-dot.venous { background: #fff; border: 2px solid var(--blue); }
+    .legend-band { width: 18px; height: 8px; border-radius: 3px; background: var(--green-soft); }
+
+    .insights {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .insight {
+      padding: 14px 15px;
+      border-radius: 16px;
+      background: #f7faf8;
+      border: 1px solid var(--line);
+    }
+
+    .insight strong { display: block; margin-bottom: 3px; font-size: 13px; }
+    .insight p { margin: 0; color: var(--muted); font-size: 11px; }
+
+    .vitals {
+      display: grid;
+      gap: 1px;
+      overflow: hidden;
+    }
+
+    .vital-row {
+      display: grid;
+      grid-template-columns: 82px 1fr auto;
+      align-items: center;
+      gap: 11px;
+      min-height: 60px;
+      padding: 11px 15px;
+      background: #fff;
+    }
+
+    .vital-time { color: var(--muted); font-size: 11px; }
+    .vital-value { font-size: 15px; font-weight: 750; }
+    .vital-note { color: var(--muted); font-size: 10px; text-align: right; }
+
+    .report-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    details.report {
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    details.report[open] { box-shadow: 0 7px 24px rgba(26, 56, 48, .05); }
+
+    details.report summary {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
+      min-height: 64px;
+      padding: 13px 15px;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    details.report summary::-webkit-details-marker { display: none; }
+    .report-title { font-size: 14px; font-weight: 760; }
+    .report-meta { margin-top: 2px; color: var(--muted); font-size: 10px; }
+
+    .report-badge {
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: var(--orange-soft);
+      color: var(--orange);
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .report-badge.red { background: var(--red-soft); color: var(--red); }
+    .report-badge.green { background: var(--green-soft); color: var(--green); }
+
+    .report-body {
+      padding: 0 15px 15px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .report-body ul { margin: 12px 0 0; padding-left: 19px; }
+    .report-body li + li { margin-top: 6px; }
+
+    .timeline {
+      position: relative;
+      display: grid;
+      gap: 0;
+      padding: 10px 15px 14px 37px;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 21px;
+      top: 25px;
+      bottom: 25px;
+      width: 2px;
+      background: var(--line);
+    }
+
+    .event {
+      position: relative;
+      padding: 11px 0 13px;
+    }
+
+    .event::before {
+      content: "";
+      position: absolute;
+      left: -22px;
+      top: 19px;
+      width: 10px;
+      height: 10px;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      background: var(--event-color, var(--blue));
+      box-shadow: 0 0 0 1px var(--event-color, var(--blue));
+    }
+
+    .event-time { color: var(--muted); font-size: 10px; font-weight: 700; }
+    .event-title { margin-top: 2px; font-size: 13px; font-weight: 760; }
+    .event-desc { margin-top: 2px; color: var(--muted); font-size: 11px; }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      min-width: 810px;
+      border-collapse: collapse;
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    th, td {
+      padding: 10px 9px;
+      border-bottom: 1px solid var(--line);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #edf3ef;
+      color: var(--muted);
+      font-weight: 760;
+    }
+
+    th:first-child, td:first-child, th:nth-child(2), td:nth-child(2) { text-align: left; }
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr.latest { background: var(--green-soft); }
+    tbody tr.venous { color: var(--blue); }
+    tbody tr.uncertain { color: var(--orange); }
+
+    .action-bar {
+      position: fixed;
+      z-index: 10;
+      left: 50%;
+      bottom: calc(12px + env(safe-area-inset-bottom));
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      width: min(560px, calc(100% - 28px));
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, .82);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .9);
+      box-shadow: 0 16px 46px rgba(25, 55, 47, .2);
+      backdrop-filter: blur(14px);
+    }
+
+    .primary, .secondary {
+      min-height: 46px;
+      border-radius: 13px;
+      font-weight: 780;
+      cursor: pointer;
+    }
+
+    .primary {
+      border: 0;
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .secondary {
+      padding: 0 16px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+    }
+
+    dialog {
+      width: min(650px, calc(100% - 20px));
+      max-height: calc(100dvh - 22px);
+      margin: auto auto 10px;
+      padding: 0;
+      border: 0;
+      border-radius: 24px;
+      background: #fff;
+      color: var(--ink);
+      box-shadow: 0 24px 70px rgba(15, 36, 30, .28);
+    }
+
+    dialog::backdrop {
+      background: rgba(13, 31, 26, .55);
+      backdrop-filter: blur(3px);
+    }
+
+    .dialog-head {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 17px 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, .96);
+    }
+
+    .dialog-head h2 { margin: 0; font-size: 18px; }
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: #fff;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .result-form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 17px 18px 22px;
+      overflow-y: auto;
+    }
+
+    .field { min-width: 0; }
+    .field.wide { grid-column: 1 / -1; }
+    .field label {
+      display: block;
+      margin: 0 0 5px 2px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .field input, .field select {
+      width: 100%;
+      min-height: 44px;
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      outline: none;
+      background: #fbfdfc;
+      color: var(--ink);
+    }
+
+    .field input:focus, .field select:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(22, 122, 91, .1);
+    }
+
+    .form-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      grid-column: 1 / -1;
+      margin-top: 5px;
+    }
+
+    .data-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0 18px 18px;
+    }
+
+    .text-btn {
+      min-height: 36px;
+      padding: 7px 11px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .text-btn.danger { color: var(--red); }
+
+    footer {
+      margin: 30px 8px 0;
+      color: var(--muted);
+      font-size: 10px;
+      text-align: center;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (min-width: 720px) {
+      .shell { padding: 28px 24px 110px; }
+      .hero { padding: 34px 36px; }
+      .status-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .status-card { min-height: 154px; padding: 18px; }
+      .controls {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .range-row { width: 280px; flex: 0 0 auto; }
+      .chart-panel { padding: 20px; }
+      .insights { grid-template-columns: repeat(3, 1fr); }
+      .report-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .vital-row { grid-template-columns: 150px 1fr auto; }
+      dialog { margin: auto; }
+      .action-bar { bottom: 20px; }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .shell { width: 100%; padding: 0; }
+      .hero { box-shadow: none; }
+      .action-bar, .controls, .notice { display: none !important; }
+      .panel, .status-card { box-shadow: none; break-inside: avoid; }
+      details.report:not([open]) .report-body { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <p class="eyebrow">Perioperative monitoring</p>
+      <h1>围手术期连续监测</h1>
+      <p class="hero-sub">以手术结束为零点，汇总血气、循环、器官功能与影像变化。点击状态卡可切换对应趋势。</p>
+      <div class="hero-meta">
+        <span class="pill">手术：D0 10:00–14:00</span>
+        <span class="pill" id="latestTimePill">最新：术后约 41 小时</span>
+        <span class="pill">数据已去标识化</span>
+      </div>
+    </header>
+
+    <aside class="notice" aria-label="医疗提示">
+      <span class="notice-icon">ⓘ</span>
+      <div>
+        <strong>用于家属整理趋势，不替代 ICU 判断</strong>
+        图表中的改善不等于脱离危险；治疗决策应以床旁生命体征、医生查体和完整病历为准。
+      </div>
+    </aside>
+
+    <section class="section" aria-labelledby="overviewHeading">
+      <div class="section-head">
+        <div>
+          <h2 id="overviewHeading">当前概况</h2>
+          <p>最新化验与最后一次家属提供的生命体征</p>
+        </div>
+      </div>
+      <div class="status-grid">
+        <div class="status-card red">
+          <div class="status-top">
+            <span class="status-name">循环</span>
+            <span class="level">危重</span>
+          </div>
+          <div class="status-value">100/30</div>
+          <div class="status-note">MAP≈53 · 心率 140<br>去甲＋多巴胺，剂量待更新</div>
+        </div>
+        <button class="status-card orange" type="button" data-metric-jump="lactate">
+          <div class="status-top">
+            <span class="status-name">组织灌注</span>
+            <span class="level">改善中</span>
+          </div>
+          <div class="status-value"><span id="latestLactate">3.25</span><span class="status-unit">mmol/L</span></div>
+          <div class="status-note">峰值 8.99 · 仍高于正常</div>
+        </button>
+        <button class="status-card red" type="button" data-metric-jump="pf">
+          <div class="status-top">
+            <span class="status-name">氧合</span>
+            <span class="level">异常</span>
+          </div>
+          <div class="status-value"><span id="latestPf">158</span><span class="status-unit">P/F</span></div>
+          <div class="status-note">FiO₂ 50% · 近期下降</div>
+        </button>
+        <button class="status-card green" type="button" data-metric-jump="hco3">
+          <div class="status-top">
+            <span class="status-name">酸碱</span>
+            <span class="level">接近纠正</span>
+          </div>
+          <div class="status-value"><span id="latestPh">7.415</span><span class="status-unit">pH</span></div>
+          <div class="status-note">HCO₃⁻ 21.2 · BE −3.4</div>
+        </button>
+        <div class="status-card red">
+          <div class="status-top">
+            <span class="status-name">感染</span>
+            <span class="level">危重</span>
+          </div>
+          <div class="status-value">146.4<span class="status-unit">PCT</span></div>
+          <div class="status-note">术后约 20 小时<br>严重感染/炎症信号</div>
+        </div>
+        <div class="status-card red">
+          <div class="status-top">
+            <span class="status-name">肾功能</span>
+            <span class="level">损伤</span>
+          </div>
+          <div class="status-value">263<span class="status-unit">μmol/L</span></div>
+          <div class="status-note">术前肌酐 121.8<br>过夜尿量 950 mL</div>
+        </div>
+        <div class="status-card red">
+          <div class="status-top">
+            <span class="status-name">凝血</span>
+            <span class="level">异常</span>
+          </div>
+          <div class="status-value">2.11<span class="status-unit">INR</span></div>
+          <div class="status-note">PT 23 · APTT 57.9<br>已补血浆/凝血因子</div>
+        </div>
+        <button class="status-card orange" type="button" data-metric-jump="hb">
+          <div class="status-top">
+            <span class="status-name">血红蛋白 / 钙</span>
+            <span class="level">需随访</span>
+          </div>
+          <div class="status-value"><span id="latestHb">9.5</span><span class="status-unit">g/dL</span></div>
+          <div class="status-note">iCa 0.99 · 均仍偏低</div>
+        </button>
+      </div>
+    </section>
+
+    <section class="section" id="trendSection" aria-labelledby="trendHeading">
+      <div class="section-head">
+        <div>
+          <h2 id="trendHeading">连续趋势</h2>
+          <p>触摸数据点查看时间、数值和样本类型</p>
+        </div>
+      </div>
+      <div class="panel chart-panel">
+        <div class="controls">
+          <div class="chip-row" id="metricControls" aria-label="选择趋势指标"></div>
+          <div class="range-row" aria-label="选择时间范围">
+            <button class="range-btn" type="button" data-range="all" aria-pressed="true">全部</button>
+            <button class="range-btn" type="button" data-range="postop" aria-pressed="false">仅术后</button>
+            <button class="range-btn" type="button" data-range="24h" aria-pressed="false">最近24h</button>
+          </div>
+        </div>
+        <div class="chart-heading">
+          <div>
+            <h3 class="chart-title" id="chartTitle">乳酸</h3>
+            <p class="chart-subtitle" id="chartSubtitle">参考范围 0.5–1.6 mmol/L</p>
+          </div>
+          <div class="chart-delta" id="chartDelta"></div>
+        </div>
+        <div class="chart-wrap" id="chartWrap">
+          <svg id="trendChart" viewBox="0 0 760 320" role="img" aria-labelledby="chartTitle chartSubtitle"></svg>
+          <div class="chart-tooltip" id="chartTooltip" role="status"></div>
+        </div>
+        <div class="legend">
+          <span class="legend-item"><span class="legend-dot"></span>动脉/常规点</span>
+          <span class="legend-item"><span class="legend-dot venous"></span>静脉血</span>
+          <span class="legend-item"><span class="legend-band"></span>参考范围</span>
+        </div>
+        <div class="insights">
+          <div class="insight">
+            <strong>灌注持续改善</strong>
+            <p>乳酸从峰值 8.99 降至 3.25，下降约 64%，但尚未恢复正常。</p>
+          </div>
+          <div class="insight">
+            <strong>酸中毒接近纠正</strong>
+            <p>最差 pH 7.196、BE −16.2；最新 pH 7.415、BE −3.4。</p>
+          </div>
+          <div class="insight">
+            <strong>氧合仍是短板</strong>
+            <p>最新 FiO₂ 50% 时 P/F 158，不能仅凭血氧饱和度判断稳定。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="vitalsHeading">
+      <div class="section-head">
+        <div>
+          <h2 id="vitalsHeading">循环与支持</h2>
+          <p>家属口述，时间为近似节点</p>
+        </div>
+      </div>
+      <div class="panel vitals">
+        <div class="vital-row">
+          <span class="vital-time">术后夜间</span>
+          <span class="vital-value">101/33 · HR 160</span>
+          <span class="vital-note">双升压药<br>高剂量</span>
+        </div>
+        <div class="vital-row">
+          <span class="vital-time">术后约22h</span>
+          <span class="vital-value">90+/30 · HR 130</span>
+          <span class="vital-note">MAP≈50<br>双升压药</span>
+        </div>
+        <div class="vital-row">
+          <span class="vital-time">术后约29h</span>
+          <span class="vital-value">100/30 · HR 140</span>
+          <span class="vital-note">MAP≈53<br>剂量未更新</span>
+        </div>
+        <div class="vital-row">
+          <span class="vital-time">过夜尿量</span>
+          <span class="vital-value">950 mL</span>
+          <span class="vital-note">尿量尚保留<br>不排除AKI</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="reportsHeading">
+      <div class="section-head">
+        <div>
+          <h2 id="reportsHeading">器官与化验汇总</h2>
+          <p>点击展开原始指标和解释边界</p>
+        </div>
+      </div>
+      <div class="report-grid">
+        <details class="report" open>
+          <summary>
+            <div>
+              <div class="report-title">感染与循环</div>
+              <div class="report-meta">术后约20小时 · PCT / 乳酸 / 血压</div>
+            </div>
+            <span class="report-badge red">危重</span>
+          </summary>
+          <div class="report-body">
+            <ul>
+              <li>PCT 146.421 ng/mL，极度升高；手术、休克和肾损伤可影响数值，但不能单独解释全部升高。</li>
+              <li>乳酸峰值8.99，最新3.25，已持续下降但仍高于正常。</li>
+              <li>最后已知MAP约53，且需去甲肾上腺素联合多巴胺。</li>
+            </ul>
+          </div>
+        </details>
+        <details class="report">
+          <summary>
+            <div>
+              <div class="report-title">肾脏与尿检</div>
+              <div class="report-meta">术后约20小时 · 肌酐 / 尿量 / 尿常规</div>
+            </div>
+            <span class="report-badge red">AKI</span>
+          </summary>
+          <div class="report-body">
+            <ul>
+              <li>肌酐121.8→263 μmol/L，尿素10.99→15.95 mmol/L。</li>
+              <li>尿潜血3+、蛋白2+、葡萄糖2+；白细胞、亚硝酸盐及酮体阴性。</li>
+              <li>CK显著升高并伴尿潜血，需要结合尿沉渣和肌红蛋白排查肌损伤相关肾损害。</li>
+            </ul>
+          </div>
+        </details>
+        <details class="report">
+          <summary>
+            <div>
+              <div class="report-title">凝血系统</div>
+              <div class="report-meta">术前正常 → 术后约19小时异常</div>
+            </div>
+            <span class="report-badge red">已干预</span>
+          </summary>
+          <div class="report-body">
+            <ul>
+              <li>PT 11.1→23.0秒；INR 0.93→2.11；APTT 26.1→57.9秒。</li>
+              <li>PT活动度105.8%→27.8%；纤维蛋白原3.91 g/L仍在参考范围。</li>
+              <li>已补充血浆和凝血因子；需要输注后的动态凝血、血小板、FDP/D-二聚体和出血量。</li>
+            </ul>
+          </div>
+        </details>
+        <details class="report">
+          <summary>
+            <div>
+              <div class="report-title">组织与肌酶</div>
+              <div class="report-meta">术后约3小时 · CK / CK-MB / LDH</div>
+            </div>
+            <span class="report-badge red">显著升高</span>
+          </summary>
+          <div class="report-body">
+            <ul>
+              <li>CK 5657、CK-MB 228.5、LDH 1660、HBDH 669 U/L。</li>
+              <li>可来自手术、骨骼肌、缺血再灌注或其他组织损伤，单凭CK-MB不能诊断心肌梗死。</li>
+              <li>术前肌钙蛋白I&lt;0.01，术后需结合动态肌钙蛋白、心电图及超声。</li>
+            </ul>
+          </div>
+        </details>
+        <details class="report">
+          <summary>
+            <div>
+              <div class="report-title">血液与电解质</div>
+              <div class="report-meta">术前至术后约41小时</div>
+            </div>
+            <span class="report-badge">随访</span>
+          </summary>
+          <div class="report-body">
+            <ul>
+              <li>血气Hb由14.7降至9.5 g/dL；最低9.2，需用血常规确认并结合出血、输液和输血记录。</li>
+              <li>离子钙1.18→最低0.88→0.99 mmol/L，仍偏低。</li>
+              <li>钾4.02→3.59→4.43 mmol/L；钠142.28、氯99.53，最近一次均在参考范围。</li>
+            </ul>
+          </div>
+        </details>
+        <details class="report">
+          <summary>
+            <div>
+              <div class="report-title">术前基础检查</div>
+              <div class="report-meta">血常规 / 胰酶 / 心肌标志物</div>
+            </div>
+            <span class="report-badge green">背景资料</span>
+          </summary>
+          <div class="report-body">
+            <ul>
+              <li>白细胞11.67轻度升高，血小板255，血红蛋白130 g/L。</li>
+              <li>D-二聚体0.95 μg/mL FEU轻度升高；淀粉酶101、脂肪酶237均在参考范围。</li>
+              <li>术前肌钙蛋白、肌红蛋白和CK-MB正常；心电图见多导联ST段略下移、QT延长及U波。</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="timelineHeading">
+      <div class="section-head">
+        <div>
+          <h2 id="timelineHeading">诊疗时间线</h2>
+          <p>使用相对时间，避免公开个人就诊日期</p>
+        </div>
+      </div>
+      <div class="panel timeline">
+        <article class="event" style="--event-color: var(--red)">
+          <div class="event-time">术前约21小时</div>
+          <div class="event-title">平扫CT发现门静脉系统积气</div>
+          <div class="event-desc">同时已有乳酸5.05、代谢性酸中毒和低氧。</div>
+        </article>
+        <article class="event" style="--event-color: var(--red)">
+          <div class="event-time">术前约5小时</div>
+          <div class="event-title">增强CT提示回肠缺血性改变</div>
+          <div class="event-desc">肠壁积气、低强化、肠系膜水肿和少量腹腔积液；肠系膜上动脉约50%狭窄。</div>
+        </article>
+        <article class="event" style="--event-color: var(--ink)">
+          <div class="event-time">D0 10:00–14:00</div>
+          <div class="event-title">手术</div>
+          <div class="event-desc">具体术式、切除长度、造口及残余可疑肠段尚未录入。</div>
+        </article>
+        <article class="event" style="--event-color: var(--red)">
+          <div class="event-time">术后约1小时</div>
+          <div class="event-title">严重代谢性酸中毒</div>
+          <div class="event-desc">pH7.196、HCO₃⁻11.9、BE−16.2。</div>
+        </article>
+        <article class="event" style="--event-color: var(--red)">
+          <div class="event-time">术后约10小时</div>
+          <div class="event-title">乳酸达到峰值8.99</div>
+          <div class="event-desc">随后仍在7–8区间波动，约术后22小时起持续下降。</div>
+        </article>
+        <article class="event" style="--event-color: var(--orange)">
+          <div class="event-time">术后约19–20小时</div>
+          <div class="event-title">凝血、肾功能及感染指标恶化</div>
+          <div class="event-desc">INR2.11、肌酐263、PCT146.421；随后补充血浆和凝血因子。</div>
+        </article>
+        <article class="event" style="--event-color: var(--blue)">
+          <div class="event-time">术后约21小时</div>
+          <div class="event-title">床旁影像复查</div>
+          <div class="event-desc">腹部超声仅见少量腹腔积液；胸片未见明显大片肺炎、肺水肿或胸腔积液。</div>
+        </article>
+        <article class="event" style="--event-color: var(--green)">
+          <div class="event-time">术后约41小时</div>
+          <div class="event-title">乳酸降至3.25，酸中毒接近纠正</div>
+          <div class="event-desc">但FiO₂50%时P/F仅158，呼吸支持需求仍高。</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="rawHeading">
+      <div class="section-head">
+        <div>
+          <h2 id="rawHeading">原始血气表</h2>
+          <p>横向滑动查看全部字段</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>相对时间</th>
+              <th>样本</th>
+              <th>pH</th>
+              <th>PCO₂</th>
+              <th>HCO₃⁻</th>
+              <th>BE</th>
+              <th>乳酸</th>
+              <th>FiO₂</th>
+              <th>P/F</th>
+              <th>Hb</th>
+              <th>iCa</th>
+            </tr>
+          </thead>
+          <tbody id="rawTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      自定义新增的数据仅保存在当前浏览器，不会上传服务器。页面不包含姓名、证件号、医院或住址。
+    </footer>
+  </main>
+
+  <div class="action-bar" aria-label="页面操作">
+    <button class="primary" type="button" id="openDialog">＋ 添加最新结果</button>
+    <button class="secondary" type="button" id="scrollTop" aria-label="回到顶部">↑</button>
+  </div>
+
+  <dialog id="resultDialog">
+    <div class="dialog-head">
+      <div>
+        <h2>添加血气结果</h2>
+        <div class="report-meta">仅存储在此设备浏览器中</div>
+      </div>
+      <button class="icon-btn" type="button" id="closeDialog" aria-label="关闭">×</button>
+    </div>
+    <form class="result-form" id="resultForm">
+      <div class="field wide">
+        <label for="relativeHours">距手术结束时间（小时）</label>
+        <input id="relativeHours" name="relativeHours" type="number" min="-48" max="1000" step="0.1" required placeholder="例如 48.5">
+      </div>
+      <div class="field">
+        <label for="sample">样本</label>
+        <select id="sample" name="sample">
+          <option value="动脉">动脉血</option>
+          <option value="静脉">静脉血</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="ph">pH</label>
+        <input id="ph" name="ph" type="number" step="0.001" inputmode="decimal">
+      </div>
+      <div class="field">
+        <label for="pco2">PCO₂ (mmHg)</label>
+        <input id="pco2" name="pco2" type="number" step="0.1" inputmode="decimal">
+      </div>
+      <div class="field">
+        <label for="po2">PO₂ (mmHg)</label>
+        <input id="po2" name="po2" type="number" step="0.1" inputmode="decimal">
+      </div>
+      <div class="field">
+        <label for="hco3">HCO₃⁻ (mmol/L)</label>
+        <input id="hco3" name="hco3" type="number" step="0.1" inputmode="decimal">
+      </div>
+      <div class="field">
+        <label for="be">BE (mmol/L)</label>
+        <input id="be" name="be" type="number" step="0.1" inputmode="decimal">
+      </div>
+      <div class="field">
+        <label for="lactate">乳酸 (mmol/L)</label>
+        <input id="lactate" name="lactate" type="number" step="0.01" inputmode="decimal">
+      </div>
+      <div class="field">
+        <label for="fio2">FiO₂ (%)</label>
+        <input id="fio2" name="fio2" type="number" min="21" max="100" step="1" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label for="pf">P/F（可留空自动算）</label>
+        <input id="pf" name="pf" type="number" step="1" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label for="hb">Hb (g/dL)</label>
+        <input id="hb" name="hb" type="number" step="0.1" inputmode="decimal">
+      </div>
+      <div class="field">
+        <label for="ca">离子钙 (mmol/L)</label>
+        <input id="ca" name="ca" type="number" step="0.01" inputmode="decimal">
+      </div>
+      <div class="form-actions">
+        <button class="secondary" type="button" id="cancelForm">取消</button>
+        <button class="primary" type="submit">保存并更新</button>
+      </div>
+    </form>
+    <div class="data-tools">
+      <button class="text-btn" type="button" id="exportData">导出自定义数据</button>
+      <button class="text-btn danger" type="button" id="clearData">清除自定义数据</button>
+    </div>
+  </dialog>
+
+  <div class="sr-only" aria-live="polite" id="liveRegion"></div>
+
+  <script>
+    const baseReadings = [
+      { h: -18.85, label: "术前18h51m", sample: "动脉", ph: 7.384, pco2: 29.7, po2: 59.8, hco3: 17.3, be: -7.7, lactate: 5.05, fio2: 33, pf: 181, hb: 14.7, ca: 1.18 },
+      { h: 1.22, label: "术后1h13m", sample: "动脉", ph: 7.196, pco2: 31.5, po2: 110.6, hco3: 11.9, be: -16.2, lactate: 5.30, fio2: 50, pf: 221, hb: 13.0, ca: 1.15 },
+      { h: 2.97, label: "术后2h58m", sample: "动脉", ph: 7.380, pco2: 25.0, po2: 78.1, hco3: 14.5, be: -10.7, lactate: 6.63, fio2: 50, pf: 156, hb: 13.4, ca: 1.02 },
+      { h: 3.00, label: "术后3h00m", sample: "待核实", ph: 7.302, pco2: 35.0, po2: 32.5, hco3: 16.9, be: -9.5, lactate: 6.53, fio2: 50, pf: 65, hb: 13.7, ca: 1.04, quality: "uncertain" },
+      { h: 7.18, label: "术后7h11m", sample: "动脉", ph: 7.436, pco2: 22.2, po2: 78.7, hco3: 14.5, be: -9.6, lactate: 6.93, fio2: 50, pf: 157, hb: 11.1, ca: .94 },
+      { h: 9.82, label: "术后9h49m", sample: "动脉", ph: 7.476, pco2: 25.0, po2: 121.4, hco3: 18.0, be: -5.5, lactate: 8.99, fio2: 50, pf: 243, hb: 11.5, ca: .93 },
+      { h: 12.55, label: "术后12h33m", sample: "动脉", ph: 7.522, pco2: 18.9, po2: 136.6, hco3: 15.2, be: -7.7, lactate: 7.64, fio2: 50, pf: 273, hb: 11.2, ca: .91 },
+      { h: 16.83, label: "术后16h50m", sample: "动脉", ph: 7.541, pco2: 21.2, po2: 120.1, hco3: 17.8, be: -4.8, lactate: 8.29, fio2: 40, pf: 300, hb: 11.1, ca: .91 },
+      { h: 21.43, label: "术后21h26m", sample: "静脉", ph: 7.452, pco2: 26.5, po2: 26.6, hco3: 18.1, be: -5.9, lactate: 7.52, fio2: null, pf: null, hb: 15.2, ca: .96 },
+      { h: 21.53, label: "术后21h32m", sample: "动脉", ph: 7.528, pco2: 20.5, po2: 64.1, hco3: 16.7, be: -6.1, lactate: 7.35, fio2: 30, pf: 214, hb: 13.4, ca: .91 },
+      { h: 27.10, label: "术后27h06m", sample: "动脉", ph: 7.458, pco2: 25.6, po2: 84.8, hco3: 17.7, be: -6.1, lactate: 6.55, fio2: 50, pf: 170, hb: 13.2, ca: .92 },
+      { h: 31.47, label: "术后31h28m", sample: "动脉", ph: 7.397, pco2: 33.6, po2: 90.1, hco3: 20.2, be: -4.6, lactate: 5.82, fio2: 50, pf: 180, hb: 9.2, ca: .88 },
+      { h: 40.68, label: "术后40h41m", sample: "动脉", ph: 7.415, pco2: 33.8, po2: 79.2, hco3: 21.2, be: -3.4, lactate: 3.25, fio2: 50, pf: 158, hb: 9.5, ca: .99 }
+    ];
+
+    const metricConfig = {
+      lactate: { label: "乳酸", unit: "mmol/L", minRef: .5, maxRef: 1.6, color: "#bd3b3b", decimals: 2, better: "down" },
+      ph: { label: "pH", unit: "", minRef: 7.35, maxRef: 7.45, color: "#3978a8", decimals: 3, better: "range" },
+      hco3: { label: "HCO₃⁻", unit: "mmol/L", minRef: 22, maxRef: 26, color: "#167a5b", decimals: 1, better: "range" },
+      be: { label: "碱剩余 BE", unit: "mmol/L", minRef: -3, maxRef: 3, color: "#7257a3", decimals: 1, better: "range" },
+      pf: { label: "氧合指数 P/F", unit: "mmHg", minRef: 400, maxRef: 500, color: "#3978a8", decimals: 0, better: "up", arterialOnly: true },
+      hb: { label: "血红蛋白 Hb", unit: "g/dL", minRef: 12, maxRef: 17.5, color: "#c76a16", decimals: 1, better: "range" },
+      ca: { label: "离子钙 iCa", unit: "mmol/L", minRef: 1.15, maxRef: 1.29, color: "#7257a3", decimals: 2, better: "range" }
+    };
+
+    let selectedMetric = "lactate";
+    let selectedRange = "all";
+    const customKey = "perioperative-dashboard-custom-v1";
+
+    function getCustomReadings() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(customKey) || "[]");
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function allReadings() {
+      return [...baseReadings, ...getCustomReadings()].sort((a, b) => a.h - b.h);
+    }
+
+    function relativeLabel(hours) {
+      if (hours < 0) return `术前${Math.abs(hours).toFixed(1)}h`;
+      return `术后${hours.toFixed(1)}h`;
+    }
+
+    function filteredReadings(metric) {
+      const all = allReadings();
+      const latest = all.at(-1)?.h ?? 0;
+      return all.filter(d => {
+        if (d[metric] == null || d.quality === "uncertain") return false;
+        if (metricConfig[metric].arterialOnly && d.sample !== "动脉") return false;
+        if (selectedRange === "postop" && d.h < 0) return false;
+        if (selectedRange === "24h" && d.h < latest - 24) return false;
+        return true;
+      });
+    }
+
+    function createSvg(tag, attrs = {}) {
+      const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+      Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value));
+      return el;
+    }
+
+    function formatValue(value, decimals) {
+      return Number(value).toFixed(decimals);
+    }
+
+    function renderMetricControls() {
+      const container = document.getElementById("metricControls");
+      container.innerHTML = "";
+      Object.entries(metricConfig).forEach(([key, cfg]) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "chip";
+        button.textContent = cfg.label;
+        button.dataset.metric = key;
+        button.setAttribute("aria-pressed", String(key === selectedMetric));
+        button.addEventListener("click", () => {
+          selectedMetric = key;
+          renderMetricControls();
+          renderChart();
+        });
+        container.appendChild(button);
+      });
+    }
+
+    function renderChart() {
+      const svg = document.getElementById("trendChart");
+      const tooltip = document.getElementById("chartTooltip");
+      const cfg = metricConfig[selectedMetric];
+      const data = filteredReadings(selectedMetric);
+      svg.innerHTML = "";
+      tooltip.style.display = "none";
+
+      document.getElementById("chartTitle").textContent = cfg.label;
+      document.getElementById("chartSubtitle").textContent =
+        `参考范围 ${cfg.minRef}–${cfg.maxRef}${cfg.unit ? ` ${cfg.unit}` : ""}`;
+
+      if (data.length < 1) return;
+
+      const W = 760, H = 320;
+      const pad = { l: 54, r: 22, t: 26, b: 53 };
+      const xMinRaw = Math.min(...data.map(d => d.h));
+      const xMaxRaw = Math.max(...data.map(d => d.h));
+      const xGap = Math.max((xMaxRaw - xMinRaw) * .04, 1);
+      const xMin = xMinRaw - xGap;
+      const xMax = xMaxRaw + xGap;
+      const values = data.map(d => d[selectedMetric]);
+      let yMin = Math.min(...values, cfg.minRef);
+      let yMax = Math.max(...values, cfg.maxRef);
+      const yGap = Math.max((yMax - yMin) * .15, selectedMetric === "ph" ? .02 : .2);
+      yMin -= yGap;
+      yMax += yGap;
+      if (selectedMetric !== "be") yMin = Math.max(0, yMin);
+
+      const x = val => pad.l + (val - xMin) / (xMax - xMin || 1) * (W - pad.l - pad.r);
+      const y = val => H - pad.b - (val - yMin) / (yMax - yMin || 1) * (H - pad.t - pad.b);
+
+      const refTop = y(Math.min(cfg.maxRef, yMax));
+      const refBottom = y(Math.max(cfg.minRef, yMin));
+      svg.appendChild(createSvg("rect", {
+        x: pad.l, y: refTop, width: W - pad.l - pad.r,
+        height: Math.max(0, refBottom - refTop), fill: "#e5f4ed"
+      }));
+
+      if (xMin < 0 && xMax > -4) {
+        const surgeryStart = x(-4);
+        const surgeryEnd = x(0);
+        svg.appendChild(createSvg("rect", {
+          x: surgeryStart, y: pad.t, width: Math.max(2, surgeryEnd - surgeryStart),
+          height: H - pad.t - pad.b, fill: "rgba(23, 52, 47, .06)"
+        }));
+        const surgeryText = createSvg("text", {
+          x: Math.max(pad.l + 2, surgeryStart + 5), y: pad.t + 13,
+          fill: "#62746f", "font-size": "10", "font-weight": "700"
+        });
+        surgeryText.textContent = "手术";
+        svg.appendChild(surgeryText);
+      }
+
+      for (let i = 0; i <= 4; i++) {
+        const value = yMin + (yMax - yMin) * i / 4;
+        const yy = y(value);
+        svg.appendChild(createSvg("line", {
+          x1: pad.l, x2: W - pad.r, y1: yy, y2: yy,
+          stroke: "#dfe8e3", "stroke-width": "1"
+        }));
+        const text = createSvg("text", {
+          x: pad.l - 8, y: yy + 4, "text-anchor": "end",
+          fill: "#7c8c87", "font-size": "10"
+        });
+        text.textContent = formatValue(value, cfg.decimals > 1 ? 2 : cfg.decimals);
+        svg.appendChild(text);
+      }
+
+      const tickCount = Math.min(5, Math.max(2, data.length - 1));
+      for (let i = 0; i <= tickCount; i++) {
+        const hour = xMinRaw + (xMaxRaw - xMinRaw) * i / tickCount;
+        const xx = x(hour);
+        const text = createSvg("text", {
+          x: xx, y: H - 23, "text-anchor": "middle",
+          fill: "#7c8c87", "font-size": "10"
+        });
+        text.textContent = hour < 0 ? `术前${Math.abs(Math.round(hour))}h` : `+${Math.round(hour)}h`;
+        svg.appendChild(text);
+      }
+
+      const segments = [];
+      let current = [];
+      data.forEach(d => {
+        if (d.sample === "静脉" && cfg.arterialOnly) {
+          if (current.length) segments.push(current);
+          current = [];
+        } else {
+          current.push(d);
+        }
+      });
+      if (current.length) segments.push(current);
+
+      segments.forEach(segment => {
+        if (segment.length < 2) return;
+        const pathData = segment.map((d, i) =>
+          `${i ? "L" : "M"} ${x(d.h).toFixed(2)} ${y(d[selectedMetric]).toFixed(2)}`
+        ).join(" ");
+        svg.appendChild(createSvg("path", {
+          d: pathData, fill: "none", stroke: cfg.color,
+          "stroke-width": "3.2", "stroke-linecap": "round", "stroke-linejoin": "round"
+        }));
+      });
+
+      data.forEach(d => {
+        const cx = x(d.h);
+        const cy = y(d[selectedMetric]);
+        const circle = createSvg("circle", {
+          cx, cy, r: d.sample === "静脉" ? 6.5 : 5.5,
+          fill: d.sample === "静脉" ? "#fff" : cfg.color,
+          stroke: d.sample === "静脉" ? "#3978a8" : "#fff",
+          "stroke-width": d.sample === "静脉" ? 3 : 2,
+          tabindex: "0", role: "button",
+          "aria-label": `${d.label} ${cfg.label} ${formatValue(d[selectedMetric], cfg.decimals)} ${cfg.unit}`
+        });
+
+        const showTooltip = () => {
+          tooltip.innerHTML = `<strong>${d.label}</strong><br>${cfg.label}：${formatValue(d[selectedMetric], cfg.decimals)} ${cfg.unit}<br>样本：${d.sample}`;
+          tooltip.style.display = "block";
+          const wrapRect = document.getElementById("chartWrap").getBoundingClientRect();
+          const scaleX = wrapRect.width / W;
+          const scaleY = wrapRect.height / H;
+          const desiredLeft = cx * scaleX + 10;
+          tooltip.style.left = `${Math.min(desiredLeft, wrapRect.width - 195)}px`;
+          tooltip.style.top = `${Math.max(8, cy * scaleY - 55)}px`;
+        };
+        circle.addEventListener("click", showTooltip);
+        circle.addEventListener("focus", showTooltip);
+        circle.addEventListener("blur", () => { tooltip.style.display = "none"; });
+        svg.appendChild(circle);
+      });
+
+      const first = data[0][selectedMetric];
+      const last = data.at(-1)[selectedMetric];
+      const rawDelta = last - first;
+      const delta = `${rawDelta >= 0 ? "+" : ""}${formatValue(rawDelta, cfg.decimals)}`;
+      const directionGood =
+        (cfg.better === "down" && rawDelta < 0) ||
+        (cfg.better === "up" && rawDelta > 0) ||
+        (cfg.better === "range" && last >= cfg.minRef && last <= cfg.maxRef);
+      const deltaEl = document.getElementById("chartDelta");
+      deltaEl.innerHTML = `<strong style="color:${directionGood ? "var(--green)" : "var(--orange)"}">${delta}</strong>区间变化`;
+    }
+
+    function renderRawTable() {
+      const body = document.getElementById("rawTableBody");
+      const readings = allReadings();
+      body.innerHTML = readings.map((d, index) => {
+        const classes = [
+          index === readings.length - 1 ? "latest" : "",
+          d.sample === "静脉" ? "venous" : "",
+          d.quality === "uncertain" ? "uncertain" : ""
+        ].filter(Boolean).join(" ");
+        const cell = (value, decimals = 1) => value == null ? "—" : Number(value).toFixed(decimals);
+        return `<tr class="${classes}">
+          <td>${d.label || relativeLabel(d.h)}</td>
+          <td>${d.sample}${d.quality === "uncertain" ? " ⚠" : ""}</td>
+          <td>${cell(d.ph, 3)}</td>
+          <td>${cell(d.pco2)}</td>
+          <td>${cell(d.hco3)}</td>
+          <td>${cell(d.be)}</td>
+          <td>${cell(d.lactate, 2)}</td>
+          <td>${cell(d.fio2, 0)}</td>
+          <td>${d.sample === "静脉" ? "不适用" : cell(d.pf, 0)}</td>
+          <td>${cell(d.hb)}</td>
+          <td>${cell(d.ca, 2)}</td>
+        </tr>`;
+      }).join("");
+    }
+
+    function updateLatest() {
+      const latest = allReadings().filter(d => d.sample === "动脉" && d.quality !== "uncertain").at(-1);
+      if (!latest) return;
+      document.getElementById("latestTimePill").textContent = `最新：${latest.label || relativeLabel(latest.h)}`;
+      if (latest.lactate != null) document.getElementById("latestLactate").textContent = Number(latest.lactate).toFixed(2);
+      if (latest.pf != null) document.getElementById("latestPf").textContent = Math.round(latest.pf);
+      if (latest.ph != null) document.getElementById("latestPh").textContent = Number(latest.ph).toFixed(3);
+      if (latest.hb != null) document.getElementById("latestHb").textContent = Number(latest.hb).toFixed(1);
+    }
+
+    function renderAll() {
+      renderMetricControls();
+      renderChart();
+      renderRawTable();
+      updateLatest();
+    }
+
+    document.querySelectorAll(".range-btn").forEach(button => {
+      button.addEventListener("click", () => {
+        selectedRange = button.dataset.range;
+        document.querySelectorAll(".range-btn").forEach(item =>
+          item.setAttribute("aria-pressed", String(item === button))
+        );
+        renderChart();
+      });
+    });
+
+    document.querySelectorAll("[data-metric-jump]").forEach(button => {
+      button.addEventListener("click", () => {
+        selectedMetric = button.dataset.metricJump;
+        renderMetricControls();
+        renderChart();
+        document.getElementById("trendSection").scrollIntoView({ behavior: "smooth" });
+      });
+    });
+
+    const dialog = document.getElementById("resultDialog");
+    const openDialog = () => {
+      const latest = allReadings().at(-1);
+      document.getElementById("relativeHours").value = latest ? (latest.h + 4).toFixed(1) : "";
+      dialog.showModal();
+    };
+    const closeDialog = () => dialog.close();
+
+    document.getElementById("openDialog").addEventListener("click", openDialog);
+    document.getElementById("closeDialog").addEventListener("click", closeDialog);
+    document.getElementById("cancelForm").addEventListener("click", closeDialog);
+    document.getElementById("scrollTop").addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+    document.getElementById("resultForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const form = new FormData(event.currentTarget);
+      const number = key => {
+        const value = form.get(key);
+        return value === "" || value == null ? null : Number(value);
+      };
+      const h = number("relativeHours");
+      const sample = form.get("sample");
+      const po2 = number("po2");
+      const fio2 = number("fio2");
+      let pf = number("pf");
+      if (pf == null && po2 != null && fio2) pf = Math.round(po2 / (fio2 / 100));
+      const entry = {
+        h,
+        label: relativeLabel(h),
+        sample,
+        ph: number("ph"),
+        pco2: number("pco2"),
+        po2,
+        hco3: number("hco3"),
+        be: number("be"),
+        lactate: number("lactate"),
+        fio2,
+        pf: sample === "静脉" ? null : pf,
+        hb: number("hb"),
+        ca: number("ca"),
+        custom: true
+      };
+      const custom = getCustomReadings();
+      custom.push(entry);
+      localStorage.setItem(customKey, JSON.stringify(custom));
+      event.currentTarget.reset();
+      closeDialog();
+      renderAll();
+      document.getElementById("liveRegion").textContent = `已添加${entry.label}结果`;
+    });
+
+    document.getElementById("clearData").addEventListener("click", () => {
+      if (!confirm("确定清除本机添加的全部结果吗？基础数据不会删除。")) return;
+      localStorage.removeItem(customKey);
+      renderAll();
+      document.getElementById("liveRegion").textContent = "已清除自定义结果";
+    });
+
+    document.getElementById("exportData").addEventListener("click", () => {
+      const payload = JSON.stringify(getCustomReadings(), null, 2);
+      const blob = new Blob([payload], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = "围手术期新增数据.json";
+      anchor.click();
+      URL.revokeObjectURL(url);
+    });
+
+    window.addEventListener("resize", () => {
+      document.getElementById("chartTooltip").style.display = "none";
+    });
+
+    renderAll();
+  </script>
+</body>
+</html>
