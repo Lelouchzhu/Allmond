@@ -942,7 +942,7 @@
       <p class="hero-sub">以手术结束为零点，汇总血气、循环、器官功能与影像变化。点击状态卡可切换对应趋势。</p>
       <div class="hero-meta">
         <span class="pill">手术：D0 10:00–14:00</span>
-        <span class="pill" id="latestTimePill">最新：术后约 41 小时</span>
+        <span class="pill" id="latestTimePill">最新化验：术后43h25m</span>
         <span class="pill">数据已去标识化</span>
       </div>
     </header>
@@ -968,8 +968,8 @@
             <span class="status-name">循环</span>
             <span class="level">危重</span>
           </div>
-          <div class="status-value">100/30</div>
-          <div class="status-note">MAP≈53 · 心率 140<br>去甲＋多巴胺，剂量待更新</div>
+          <div class="status-value">110/35</div>
+          <div class="status-note">MAP 57–60 · 心率 110<br>去甲＋多巴胺已减量</div>
         </div>
         <button class="status-card orange" type="button" data-metric-jump="lactate">
           <div class="status-top">
@@ -1009,15 +1009,15 @@
             <span class="level">损伤</span>
           </div>
           <div class="status-value">263<span class="status-unit">μmol/L</span></div>
-          <div class="status-note">术前肌酐 121.8<br>过夜尿量 950 mL</div>
+          <div class="status-note">术前肌酐 121.8<br>最新过夜尿量 300 mL</div>
         </div>
-        <div class="status-card red">
+        <div class="status-card orange">
           <div class="status-top">
             <span class="status-name">凝血</span>
-            <span class="level">异常</span>
+            <span class="level">改善中</span>
           </div>
-          <div class="status-value">2.11<span class="status-unit">INR</span></div>
-          <div class="status-note">PT 23 · APTT 57.9<br>已补血浆/凝血因子</div>
+          <div class="status-value">1.43<span class="status-unit">INR</span></div>
+          <div class="status-note">PT 15.8 · APTT 50.8<br>较输注前改善，仍异常</div>
         </div>
         <button class="status-card orange" type="button" data-metric-jump="hb">
           <div class="status-top">
@@ -1103,9 +1103,14 @@
           <span class="vital-note">MAP≈53<br>剂量未更新</span>
         </div>
         <div class="vital-row">
-          <span class="vital-time">过夜尿量</span>
-          <span class="vital-value">950 mL</span>
-          <span class="vital-note">尿量尚保留<br>不排除AKI</span>
+          <span class="vital-time">术后约44h</span>
+          <span class="vital-value">110/35 · HR 110</span>
+          <span class="vital-note">MAP 57–60<br>升压药减量</span>
+        </div>
+        <div class="vital-row">
+          <span class="vital-time">过夜尿量趋势</span>
+          <span class="vital-value">950 → 300 mL</span>
+          <span class="vital-note">明显下降<br>考虑CRRT</span>
         </div>
       </div>
     </section>
@@ -1154,15 +1159,15 @@
           <summary>
             <div>
               <div class="report-title">凝血系统</div>
-              <div class="report-meta">术前正常 → 术后约19小时异常</div>
+              <div class="report-meta">术后约19小时恶化 → 43小时部分纠正</div>
             </div>
-            <span class="report-badge red">已干预</span>
+            <span class="report-badge">改善中</span>
           </summary>
           <div class="report-body">
             <ul>
-              <li>PT 11.1→23.0秒；INR 0.93→2.11；APTT 26.1→57.9秒。</li>
-              <li>PT活动度105.8%→27.8%；纤维蛋白原3.91 g/L仍在参考范围。</li>
-              <li>已补充血浆和凝血因子；需要输注后的动态凝血、血小板、FDP/D-二聚体和出血量。</li>
+              <li>补血浆前：PT 23.0秒、INR 2.11、APTT 57.9秒、PT活动度27.8%。</li>
+              <li>最新：PT 15.8秒、INR 1.43、APTT 50.8秒、PT活动度56.9%，均改善但尚未正常。</li>
+              <li>TT 12.4秒偏短；纤维蛋白原4.38 g/L正常偏高。仍需血小板、FDP/D-二聚体、引流量和出血表现。</li>
             </ul>
           </div>
         </details>
@@ -1293,6 +1298,11 @@
           <div class="event-time">术后约41小时</div>
           <div class="event-title">乳酸降至3.25，酸中毒接近纠正</div>
           <div class="event-desc">但FiO₂50%时P/F仅158，呼吸支持需求仍高。</div>
+        </article>
+        <article class="event" style="--event-color: var(--green)">
+          <div class="event-time">术后约43小时25分</div>
+          <div class="event-title">凝血功能在血浆/凝血因子后部分改善</div>
+          <div class="event-desc">INR 2.11→1.43，PT 23→15.8秒，APTT 57.9→50.8秒；仍未恢复正常。</div>
         </article>
       </div>
     </section>
@@ -1442,12 +1452,13 @@
     let selectedRange = "all";
     const customKey = "perioperative-dashboard-custom-v1";
     const questionKey = "perioperative-dashboard-questions-v1";
+    const latestNonBloodGasReport = { h: 43.42, label: "术后43h25m", type: "凝血" };
     const doctorQuestions = [
       {
         id: "hemodynamics",
         group: "urgent",
         title: "现在的MAP和两种升压药剂量分别是多少？",
-        detail: "与上一班相比是在减量、持平还是加量？心率140是什么心律？"
+        detail: "与上一班相比减量多少？CRRT启动及净脱水时希望维持的MAP和暂停标准是什么？"
       },
       {
         id: "lactate",
@@ -1482,14 +1493,14 @@
       {
         id: "kidney",
         group: "followup",
-        title: "肌酐和每小时尿量的最新趋势如何？",
-        detail: "钾、酸中毒和液体负荷是否稳定；达到什么条件会考虑CRRT？"
+        title: "CRRT准备解决的首要问题是什么？",
+        detail: "过夜尿量降至300mL；请说明最新肌酐、钾、酸碱、净液体平衡、初始净脱水量及停止标准。"
       },
       {
         id: "coagulation",
         group: "followup",
-        title: "补血浆后凝血指标是否改善？",
-        detail: "最新PT、INR、APTT、血小板、纤维蛋白原和FDP/D-二聚体是多少？"
+        title: "当前凝血水平能否安全进行股静脉置管和CRRT？",
+        detail: "最新INR1.43、PT15.8、APTT50.8；还需确认血小板、FDP/D-二聚体、出血表现和CRRT抗凝方案。"
       },
       {
         id: "bleeding",
@@ -1513,7 +1524,7 @@
         id: "calcium",
         group: "followup",
         title: "离子钙0.99是否继续纠正？",
-        detail: "镁、磷及输血相关枸橼酸负荷是否同时监测？"
+        detail: "若CRRT使用枸橼酸抗凝，补钙目标、监测频率以及枸橼酸蓄积的判断标准是什么？"
       }
     ];
 
@@ -1749,7 +1760,10 @@
     function updateLatest() {
       const latest = allReadings().filter(d => d.sample === "动脉" && d.quality !== "uncertain").at(-1);
       if (!latest) return;
-      document.getElementById("latestTimePill").textContent = `最新：${latest.label || relativeLabel(latest.h)}`;
+      const customIsNewer = latest.custom && latest.h > latestNonBloodGasReport.h;
+      document.getElementById("latestTimePill").textContent = customIsNewer
+        ? `最新：${latest.label || relativeLabel(latest.h)}`
+        : `最新化验：${latestNonBloodGasReport.label}`;
       if (latest.lactate != null) document.getElementById("latestLactate").textContent = Number(latest.lactate).toFixed(2);
       if (latest.pf != null) document.getElementById("latestPf").textContent = Math.round(latest.pf);
       if (latest.ph != null) document.getElementById("latestPh").textContent = Number(latest.ph).toFixed(3);
