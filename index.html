@@ -485,6 +485,165 @@
     .report-body ul { margin: 12px 0 0; padding-left: 19px; }
     .report-body li + li { margin-top: 6px; }
 
+    .question-panel {
+      overflow: hidden;
+    }
+
+    .question-summary {
+      padding: 18px 17px 15px;
+      background: linear-gradient(135deg, #17342f, #245d4d);
+      color: #fff;
+    }
+
+    .question-summary-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .question-summary h3 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .question-summary p {
+      margin: 5px 0 0;
+      color: rgba(255, 255, 255, .72);
+      font-size: 11px;
+    }
+
+    .question-count {
+      flex: 0 0 auto;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .12);
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .progress-track {
+      height: 5px;
+      margin-top: 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .15);
+      overflow: hidden;
+    }
+
+    .progress-value {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: #8be0bb;
+      transition: width .25s ease;
+    }
+
+    .question-toolbar {
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      padding: 12px 14px 4px;
+      scrollbar-width: none;
+    }
+
+    .question-toolbar::-webkit-scrollbar { display: none; }
+
+    .question-tool {
+      flex: 0 0 auto;
+      min-height: 35px;
+      padding: 7px 11px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .question-tool.active {
+      border-color: var(--green);
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .question-groups {
+      padding: 5px 14px 16px;
+    }
+
+    .question-group + .question-group { margin-top: 17px; }
+
+    .question-group-title {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin: 0 2px 7px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .04em;
+    }
+
+    .priority-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--red);
+    }
+
+    .priority-dot.followup { background: var(--orange); }
+
+    .question-list {
+      display: grid;
+      gap: 7px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .question-item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fbfdfc;
+      transition: opacity .2s ease, background .2s ease;
+    }
+
+    .question-item.hidden { display: none; }
+
+    .question-item.answered {
+      background: #f0f5f2;
+      opacity: .68;
+    }
+
+    .question-label {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 10px;
+      padding: 12px;
+      cursor: pointer;
+    }
+
+    .question-label input {
+      width: 21px;
+      height: 21px;
+      margin: 1px 0 0;
+      accent-color: var(--green);
+    }
+
+    .question-text strong {
+      display: block;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .question-text span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.45;
+    }
+
     .timeline {
       position: relative;
       display: grid;
@@ -567,7 +726,7 @@
       left: 50%;
       bottom: calc(12px + env(safe-area-inset-bottom));
       display: grid;
-      grid-template-columns: 1fr auto;
+      grid-template-columns: 1fr auto auto;
       gap: 8px;
       width: min(560px, calc(100% - 28px));
       padding: 8px;
@@ -592,7 +751,7 @@
     }
 
     .secondary {
-      padding: 0 16px;
+      padding: 0 13px;
       border: 1px solid var(--line);
       background: #fff;
       color: var(--ink);
@@ -1032,6 +1191,35 @@
       </div>
     </section>
 
+    <section class="section" id="questionsSection" aria-labelledby="questionsHeading">
+      <div class="section-head">
+        <div>
+          <h2 id="questionsHeading">现在需要询问医生</h2>
+          <p>按优先级逐项确认，勾选进度仅保存在当前浏览器</p>
+        </div>
+      </div>
+      <div class="panel question-panel">
+        <div class="question-summary">
+          <div class="question-summary-top">
+            <div>
+              <h3>查房沟通清单</h3>
+              <p>先问危及当前稳定性的6项，再补充器官功能和治疗计划。</p>
+            </div>
+            <span class="question-count" id="questionCount">0 / 12 已确认</span>
+          </div>
+          <div class="progress-track" aria-hidden="true">
+            <div class="progress-value" id="questionProgress"></div>
+          </div>
+        </div>
+        <div class="question-toolbar">
+          <button class="question-tool" type="button" id="copyQuestions">复制未问内容</button>
+          <button class="question-tool" type="button" id="togglePending">仅看未问</button>
+          <button class="question-tool" type="button" id="resetQuestions">重置勾选</button>
+        </div>
+        <div class="question-groups" id="questionGroups"></div>
+      </div>
+    </section>
+
     <section class="section" aria-labelledby="timelineHeading">
       <div class="section-head">
         <div>
@@ -1119,6 +1307,7 @@
 
   <div class="action-bar" aria-label="页面操作">
     <button class="primary" type="button" id="openDialog">＋ 添加最新结果</button>
+    <button class="secondary" type="button" id="jumpQuestions">清单</button>
     <button class="secondary" type="button" id="scrollTop" aria-label="回到顶部">↑</button>
   </div>
 
@@ -1225,6 +1414,81 @@
     let selectedMetric = "lactate";
     let selectedRange = "all";
     const customKey = "perioperative-dashboard-custom-v1";
+    const questionKey = "perioperative-dashboard-questions-v1";
+    const doctorQuestions = [
+      {
+        id: "hemodynamics",
+        group: "urgent",
+        title: "现在的MAP和两种升压药剂量分别是多少？",
+        detail: "与上一班相比是在减量、持平还是加量？心率140是什么心律？"
+      },
+      {
+        id: "lactate",
+        group: "urgent",
+        title: "最新乳酸是多少，下降速度是否达到医生预期？",
+        detail: "下一次复查时间和当前灌注目标是什么？"
+      },
+      {
+        id: "source-control",
+        group: "urgent",
+        title: "手术中实际发现和处理了什么？",
+        detail: "切除多长肠段、是否造口、是否仍有活力可疑的肠管、需不需要二次探查？"
+      },
+      {
+        id: "shock-cause",
+        group: "urgent",
+        title: "目前休克的主要原因判断是什么？",
+        detail: "感染性、失血性、心源性或混合性？是否还有未控制的感染源或活动性出血？"
+      },
+      {
+        id: "oxygenation",
+        group: "urgent",
+        title: "FiO₂ 50%时P/F约158，氧合下降的原因是什么？",
+        detail: "目前呼吸机支持强度、肺部影像变化和未来拔管判断标准是什么？"
+      },
+      {
+        id: "next-window",
+        group: "urgent",
+        title: "未来6–12小时最重要的观察目标是什么？",
+        detail: "哪些变化代表有效改善，哪些变化意味着需要升级治疗？最好、最可能和最坏情况分别是什么？"
+      },
+      {
+        id: "kidney",
+        group: "followup",
+        title: "肌酐和每小时尿量的最新趋势如何？",
+        detail: "钾、酸中毒和液体负荷是否稳定；达到什么条件会考虑CRRT？"
+      },
+      {
+        id: "coagulation",
+        group: "followup",
+        title: "补血浆后凝血指标是否改善？",
+        detail: "最新PT、INR、APTT、血小板、纤维蛋白原和FDP/D-二聚体是多少？"
+      },
+      {
+        id: "bleeding",
+        group: "followup",
+        title: "血红蛋白下降是否存在活动性出血？",
+        detail: "血常规Hb、腹腔引流量、伤口和床旁影像如何；输血判断依据是什么？"
+      },
+      {
+        id: "infection",
+        group: "followup",
+        title: "培养和抗感染治疗进展如何？",
+        detail: "血培养/腹腔培养是否有结果，抗菌药是否覆盖肠源性感染，PCT趋势如何解释？"
+      },
+      {
+        id: "heart",
+        group: "followup",
+        title: "心率快和肌酶升高是否涉及心肌损伤？",
+        detail: "动态肌钙蛋白、心电图及床旁心脏超声结果如何？"
+      },
+      {
+        id: "calcium",
+        group: "followup",
+        title: "离子钙0.99是否继续纠正？",
+        detail: "镁、磷及输血相关枸橼酸负荷是否同时监测？"
+      }
+    ];
 
     function getCustomReadings() {
       try {
@@ -1465,11 +1729,111 @@
       if (latest.hb != null) document.getElementById("latestHb").textContent = Number(latest.hb).toFixed(1);
     }
 
+    function getQuestionState() {
+      try {
+        const state = JSON.parse(localStorage.getItem(questionKey) || "{}");
+        return state && typeof state === "object" ? state : {};
+      } catch {
+        return {};
+      }
+    }
+
+    function updateQuestionProgress() {
+      const state = getQuestionState();
+      const answered = doctorQuestions.filter(question => state[question.id]).length;
+      const total = doctorQuestions.length;
+      document.getElementById("questionCount").textContent = `${answered} / ${total} 已确认`;
+      document.getElementById("questionProgress").style.width = `${answered / total * 100}%`;
+    }
+
+    function renderQuestions() {
+      const state = getQuestionState();
+      const container = document.getElementById("questionGroups");
+      const groups = [
+        { id: "urgent", label: "优先确认 · 6项", className: "" },
+        { id: "followup", label: "器官功能与治疗计划 · 6项", className: "followup" }
+      ];
+      container.innerHTML = groups.map(group => {
+        const items = doctorQuestions.filter(question => question.group === group.id).map(question => `
+          <li class="question-item${state[question.id] ? " answered" : ""}" data-question-id="${question.id}">
+            <label class="question-label">
+              <input type="checkbox" ${state[question.id] ? "checked" : ""} aria-label="标记已向医生确认">
+              <span class="question-text">
+                <strong>${question.title}</strong>
+                <span>${question.detail}</span>
+              </span>
+            </label>
+          </li>
+        `).join("");
+        return `
+          <div class="question-group">
+            <div class="question-group-title">
+              <span class="priority-dot ${group.className}"></span>${group.label}
+            </div>
+            <ul class="question-list">${items}</ul>
+          </div>
+        `;
+      }).join("");
+
+      container.querySelectorAll(".question-item").forEach(item => {
+        const checkbox = item.querySelector("input");
+        checkbox.addEventListener("change", () => {
+          const next = getQuestionState();
+          next[item.dataset.questionId] = checkbox.checked;
+          localStorage.setItem(questionKey, JSON.stringify(next));
+          item.classList.toggle("answered", checkbox.checked);
+          if (document.getElementById("togglePending").classList.contains("active") && checkbox.checked) {
+            item.classList.add("hidden");
+          }
+          updateQuestionProgress();
+        });
+      });
+      updateQuestionProgress();
+    }
+
+    function pendingQuestionText() {
+      const state = getQuestionState();
+      const pending = doctorQuestions.filter(question => !state[question.id]);
+      const lines = ["请协助确认以下问题："];
+      ["urgent", "followup"].forEach(group => {
+        const questions = pending.filter(question => question.group === group);
+        if (!questions.length) return;
+        lines.push("", group === "urgent" ? "【优先确认】" : "【器官功能与治疗计划】");
+        questions.forEach((question, index) => {
+          lines.push(`${index + 1}. ${question.title}`);
+          lines.push(`   ${question.detail}`);
+        });
+      });
+      return lines.join("\n");
+    }
+
+    async function copyPendingQuestions() {
+      const text = pendingQuestionText();
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+      }
+      const button = document.getElementById("copyQuestions");
+      const original = button.textContent;
+      button.textContent = "已复制";
+      document.getElementById("liveRegion").textContent = "未确认的问题已复制";
+      setTimeout(() => { button.textContent = original; }, 1400);
+    }
+
     function renderAll() {
       renderMetricControls();
       renderChart();
       renderRawTable();
       updateLatest();
+      renderQuestions();
     }
 
     document.querySelectorAll(".range-btn").forEach(button => {
@@ -1503,6 +1867,25 @@
     document.getElementById("closeDialog").addEventListener("click", closeDialog);
     document.getElementById("cancelForm").addEventListener("click", closeDialog);
     document.getElementById("scrollTop").addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+    document.getElementById("jumpQuestions").addEventListener("click", () =>
+      document.getElementById("questionsSection").scrollIntoView({ behavior: "smooth" })
+    );
+    document.getElementById("copyQuestions").addEventListener("click", copyPendingQuestions);
+    document.getElementById("togglePending").addEventListener("click", event => {
+      const active = event.currentTarget.classList.toggle("active");
+      event.currentTarget.textContent = active ? "显示全部" : "仅看未问";
+      document.querySelectorAll(".question-item").forEach(item => {
+        item.classList.toggle("hidden", active && item.classList.contains("answered"));
+      });
+    });
+    document.getElementById("resetQuestions").addEventListener("click", () => {
+      if (!confirm("确定重置全部沟通清单吗？")) return;
+      localStorage.removeItem(questionKey);
+      document.getElementById("togglePending").classList.remove("active");
+      document.getElementById("togglePending").textContent = "仅看未问";
+      renderQuestions();
+      document.getElementById("liveRegion").textContent = "沟通清单已重置";
+    });
 
     document.getElementById("resultForm").addEventListener("submit", event => {
       event.preventDefault();
