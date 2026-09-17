@@ -861,6 +861,31 @@
 
     .text-btn.danger { color: var(--red); }
 
+    .toast {
+      position: fixed;
+      z-index: 30;
+      left: 50%;
+      bottom: calc(82px + env(safe-area-inset-bottom));
+      max-width: calc(100% - 36px);
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(23, 52, 47, .94);
+      color: #fff;
+      box-shadow: var(--shadow);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 8px);
+      transition: opacity .18s ease, transform .18s ease;
+    }
+
+    .toast.visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
     footer {
       margin: 30px 8px 0;
       color: var(--muted);
@@ -1383,6 +1408,7 @@
     </div>
   </dialog>
 
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <div class="sr-only" aria-live="polite" id="liveRegion"></div>
 
   <script>
@@ -1808,10 +1834,22 @@
       return lines.join("\n");
     }
 
+    let toastTimer;
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("visible");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("visible"), 2600);
+    }
+
     async function copyPendingQuestions() {
       const text = pendingQuestionText();
+      let copied = false;
       try {
+        if (!navigator.clipboard?.writeText) throw new Error("Clipboard API unavailable");
         await navigator.clipboard.writeText(text);
+        copied = true;
       } catch {
         const textarea = document.createElement("textarea");
         textarea.value = text;
@@ -1819,14 +1857,19 @@
         textarea.style.opacity = "0";
         document.body.appendChild(textarea);
         textarea.select();
-        document.execCommand("copy");
+        copied = document.execCommand("copy");
         textarea.remove();
+      }
+      if (!copied) {
+        window.prompt("自动复制未获浏览器授权，请长按复制：", text);
       }
       const button = document.getElementById("copyQuestions");
       const original = button.textContent;
-      button.textContent = "已复制";
-      document.getElementById("liveRegion").textContent = "未确认的问题已复制";
-      setTimeout(() => { button.textContent = original; }, 1400);
+      button.textContent = copied ? "已复制" : "请手动复制";
+      const message = copied ? "未确认的问题已复制，可直接发送给家属或医生" : "浏览器未授权自动复制";
+      showToast(message);
+      document.getElementById("liveRegion").textContent = message;
+      setTimeout(() => { button.textContent = original; }, 2600);
     }
 
     function renderAll() {
