@@ -1,0 +1,16 @@
+{
+  "name": "Perioperative Monitoring Dashboard",
+  "terminals": [
+    {
+      "name": "dashboard",
+      "command": "python3 -m http.server 8080",
+      "description": "Serves the self-contained perioperative monitoring dashboard (index.html) at http://localhost:8080/index.html"
+    }
+  ],
+  "ports": [
+    {
+      "name": "dashboard",
+      "port": 8080
+    }
+  ]
+}
