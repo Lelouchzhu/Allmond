@@ -942,7 +942,7 @@
       <p class="hero-sub">以手术结束为零点，汇总血气、循环、器官功能与影像变化。点击状态卡可切换对应趋势。</p>
       <div class="hero-meta">
         <span class="pill">手术：D0 10:00–14:00</span>
-        <span class="pill" id="latestTimePill">最新：术后约 41 小时</span>
+        <span class="pill" id="latestTimePill">最新化验：术后62h04m</span>
         <span class="pill">数据已去标识化</span>
       </div>
     </header>
@@ -968,64 +968,72 @@
             <span class="status-name">循环</span>
             <span class="level">危重</span>
           </div>
-          <div class="status-value">100/30</div>
-          <div class="status-note">MAP≈53 · 心率 140<br>去甲＋多巴胺，剂量待更新</div>
+          <div class="status-value">140/50</div>
+          <div class="status-note">MAP≈80 · 脉搏 100<br>升压药剂量需同步更新</div>
         </div>
         <button class="status-card orange" type="button" data-metric-jump="lactate">
           <div class="status-top">
             <span class="status-name">组织灌注</span>
-            <span class="level">改善中</span>
+            <span class="level">轻度回升</span>
           </div>
-          <div class="status-value"><span id="latestLactate">3.25</span><span class="status-unit">mmol/L</span></div>
-          <div class="status-note">峰值 8.99 · 仍高于正常</div>
+          <div class="status-value"><span id="latestLactate">2.57</span><span class="status-unit">mmol/L</span></div>
+          <div class="status-note">曾降至2.27 · 再至2.86→2.57</div>
         </button>
         <button class="status-card red" type="button" data-metric-jump="pf">
           <div class="status-top">
             <span class="status-name">氧合</span>
             <span class="level">异常</span>
           </div>
-          <div class="status-value"><span id="latestPf">158</span><span class="status-unit">P/F</span></div>
-          <div class="status-note">FiO₂ 50% · 近期下降</div>
+          <div class="status-value"><span id="latestPf">176</span><span class="status-unit">P/F</span></div>
+          <div class="status-note">FiO₂ 50% · 较181略降</div>
         </button>
         <button class="status-card green" type="button" data-metric-jump="hco3">
           <div class="status-top">
             <span class="status-name">酸碱</span>
-            <span class="level">接近纠正</span>
+            <span class="level">接近正常</span>
           </div>
-          <div class="status-value"><span id="latestPh">7.415</span><span class="status-unit">pH</span></div>
-          <div class="status-note">HCO₃⁻ 21.2 · BE −3.4</div>
+          <div class="status-value"><span id="latestPh">7.367</span><span class="status-unit">pH</span></div>
+          <div class="status-note">HCO₃⁻ 22.5 · BE −2.8</div>
         </button>
         <div class="status-card red">
           <div class="status-top">
-            <span class="status-name">感染</span>
+            <span class="status-name">感染 / 炎症</span>
             <span class="level">危重</span>
           </div>
-          <div class="status-value">146.4<span class="status-unit">PCT</span></div>
-          <div class="status-note">术后约 20 小时<br>严重感染/炎症信号</div>
+          <div class="status-value">981<span class="status-unit">IL-6</span></div>
+          <div class="status-note">PCT 146.4（此前）<br>炎症信号仍极高</div>
         </div>
         <div class="status-card red">
           <div class="status-top">
             <span class="status-name">肾功能</span>
             <span class="level">损伤</span>
           </div>
-          <div class="status-value">263<span class="status-unit">μmol/L</span></div>
-          <div class="status-note">术前肌酐 121.8<br>过夜尿量 950 mL</div>
+          <div class="status-value">363<span class="status-unit">μmol/L</span></div>
+          <div class="status-note">121.8→263→363<br>尿素17.8 · 过夜尿量300mL</div>
+        </div>
+        <div class="status-card red">
+          <div class="status-top">
+            <span class="status-name">肝细胞损伤</span>
+            <span class="level">显著</span>
+          </div>
+          <div class="status-value">891<span class="status-unit">ALT</span></div>
+          <div class="status-note">AST 806<br>需结合休克判断缺血性损伤</div>
         </div>
         <div class="status-card red">
           <div class="status-top">
             <span class="status-name">凝血</span>
-            <span class="level">异常</span>
+            <span class="level">危急值</span>
           </div>
-          <div class="status-value">2.11<span class="status-unit">INR</span></div>
-          <div class="status-note">PT 23 · APTT 57.9<br>已补血浆/凝血因子</div>
+          <div class="status-value">72.4<span class="status-unit">APTT</span></div>
+          <div class="status-note">76.1→72.4秒（危急）<br>参考21–45 · 已复查</div>
         </div>
-        <button class="status-card orange" type="button" data-metric-jump="hb">
+        <button class="status-card red" type="button" data-metric-jump="hb">
           <div class="status-top">
             <span class="status-name">血红蛋白 / 钙</span>
-            <span class="level">需随访</span>
+            <span class="level">继续下降</span>
           </div>
-          <div class="status-value"><span id="latestHb">9.5</span><span class="status-unit">g/dL</span></div>
-          <div class="status-note">iCa 0.99 · 均仍偏低</div>
+          <div class="status-value"><span id="latestHb">8.4</span><span class="status-unit">g/dL</span></div>
+          <div class="status-note">Hct 25% · iCa 1.06</div>
         </button>
       </div>
     </section>
@@ -1064,16 +1072,16 @@
         </div>
         <div class="insights">
           <div class="insight">
-            <strong>灌注持续改善</strong>
-            <p>乳酸从峰值 8.99 降至 3.25，下降约 64%，但尚未恢复正常。</p>
+            <strong>乳酸轻度回升后回落</strong>
+            <p>峰值8.99→最低2.27后升至2.86，最新2.57；仍高于正常，需继续观察灌注与升压药变化。</p>
           </div>
           <div class="insight">
-            <strong>酸中毒接近纠正</strong>
-            <p>最差 pH 7.196、BE −16.2；最新 pH 7.415、BE −3.4。</p>
+            <strong>酸碱基本纠正</strong>
+            <p>最差pH7.196、BE−16.2；最新pH7.367、HCO₃⁻22.5、BE−2.8，代谢性酸中毒已接近纠正。</p>
           </div>
           <div class="insight">
-            <strong>氧合仍是短板</strong>
-            <p>最新 FiO₂ 50% 时 P/F 158，不能仅凭血氧饱和度判断稳定。</p>
+            <strong>氧合与凝血需警惕</strong>
+            <p>P/F约176（FiO₂50%）仍低；APTT危急值72.4秒，出血与抗凝方案需优先确认。</p>
           </div>
         </div>
       </div>
@@ -1103,9 +1111,19 @@
           <span class="vital-note">MAP≈53<br>剂量未更新</span>
         </div>
         <div class="vital-row">
-          <span class="vital-time">过夜尿量</span>
-          <span class="vital-value">950 mL</span>
-          <span class="vital-note">尿量尚保留<br>不排除AKI</span>
+          <span class="vital-time">术后约44h</span>
+          <span class="vital-value">110/35 · HR 110</span>
+          <span class="vital-note">MAP 57–60<br>升压药减量</span>
+        </div>
+        <div class="vital-row">
+          <span class="vital-time">术后约50h</span>
+          <span class="vital-value">140/50 · 脉搏 100</span>
+          <span class="vital-note">MAP≈80<br>单次探视读数</span>
+        </div>
+        <div class="vital-row">
+          <span class="vital-time">过夜尿量趋势</span>
+          <span class="vital-value">950 → 300 mL</span>
+          <span class="vital-note">明显下降<br>考虑CRRT</span>
         </div>
       </div>
     </section>
@@ -1122,15 +1140,16 @@
           <summary>
             <div>
               <div class="report-title">感染与循环</div>
-              <div class="report-meta">术后约20小时 · PCT / 乳酸 / 血压</div>
+              <div class="report-meta">术后约20–45小时 · PCT / IL-6 / 乳酸 / 血压</div>
             </div>
             <span class="report-badge red">危重</span>
           </summary>
           <div class="report-body">
             <ul>
               <li>PCT 146.421 ng/mL，极度升高；手术、休克和肾损伤可影响数值，但不能单独解释全部升高。</li>
-              <li>乳酸峰值8.99，最新3.25，已持续下降但仍高于正常。</li>
-              <li>最后已知MAP约53，且需去甲肾上腺素联合多巴胺。</li>
+              <li>最新IL-6 981 pg/mL（参考0–7），提示炎症反应仍极强，需结合培养、感染源和临床趋势。</li>
+              <li>乳酸峰值8.99，曾降至2.27后回升至2.86，最新2.57，仍高于正常范围。</li>
+              <li>最近探视血压140/50、脉搏100，单次MAP约80；仍需结合升压药准确剂量和连续监测。</li>
             </ul>
           </div>
         </details>
@@ -1138,13 +1157,14 @@
           <summary>
             <div>
               <div class="report-title">肾脏与尿检</div>
-              <div class="report-meta">术后约20小时 · 肌酐 / 尿量 / 尿常规</div>
+              <div class="report-meta">术后约20–45小时 · 肌酐 / 尿量 / 尿常规</div>
             </div>
             <span class="report-badge red">AKI</span>
           </summary>
           <div class="report-body">
             <ul>
-              <li>肌酐121.8→263 μmol/L，尿素10.99→15.95 mmol/L。</li>
+              <li>肌酐121.8→263→363 μmol/L，尿素10.99→15.95→17.80 mmol/L，急性肾损伤继续进展。</li>
+              <li>过夜尿量由950降至300mL，目前考虑股静脉置管后接受CRRT。</li>
               <li>尿潜血3+、蛋白2+、葡萄糖2+；白细胞、亚硝酸盐及酮体阴性。</li>
               <li>CK显著升高并伴尿潜血，需要结合尿沉渣和肌红蛋白排查肌损伤相关肾损害。</li>
             </ul>
@@ -1154,15 +1174,16 @@
           <summary>
             <div>
               <div class="report-title">凝血系统</div>
-              <div class="report-meta">术前正常 → 术后约19小时异常</div>
+              <div class="report-meta">术后约19小时恶化 → 43小时改善 → 57–62小时APTT危急</div>
             </div>
-            <span class="report-badge red">已干预</span>
+            <span class="report-badge red">危急值</span>
           </summary>
           <div class="report-body">
             <ul>
-              <li>PT 11.1→23.0秒；INR 0.93→2.11；APTT 26.1→57.9秒。</li>
-              <li>PT活动度105.8%→27.8%；纤维蛋白原3.91 g/L仍在参考范围。</li>
-              <li>已补充血浆和凝血因子；需要输注后的动态凝血、血小板、FDP/D-二聚体和出血量。</li>
+              <li>补血浆前：PT 23.0秒、INR 2.11、APTT 57.9秒、PT活动度27.8%。</li>
+              <li>术后约43小时曾改善：PT 15.8秒、INR 1.43、APTT 50.8秒、PT活动度56.9%。</li>
+              <li>最新APTT危急值：76.1秒（术后约57小时）→72.4秒（术后约62小时），参考21–45；报告备注“有危急值、结果已复查”。</li>
+              <li>需立即确认是否已开始CRRT抗凝（肝素/枸橼酸）、有无出血、血小板及是否需停抗凝或补充凝血因子。</li>
             </ul>
           </div>
         </details>
@@ -1170,13 +1191,14 @@
           <summary>
             <div>
               <div class="report-title">组织与肌酶</div>
-              <div class="report-meta">术后约3小时 · CK / CK-MB / LDH</div>
+              <div class="report-meta">术后约3小时 → 45小时 · CK / CK-MB / LDH</div>
             </div>
             <span class="report-badge red">显著升高</span>
           </summary>
           <div class="report-body">
             <ul>
-              <li>CK 5657、CK-MB 228.5、LDH 1660、HBDH 669 U/L。</li>
+              <li>CK 5657→8280 U/L，继续升高；需警惕持续肌损伤及肌红蛋白相关肾损害。</li>
+              <li>CK-MB 228.5→132.6、LDH 1660→915、HBDH 669→576 U/L，虽下降但仍显著升高。</li>
               <li>可来自手术、骨骼肌、缺血再灌注或其他组织损伤，单凭CK-MB不能诊断心肌梗死。</li>
               <li>术前肌钙蛋白I&lt;0.01，术后需结合动态肌钙蛋白、心电图及超声。</li>
             </ul>
@@ -1186,15 +1208,31 @@
           <summary>
             <div>
               <div class="report-title">血液与电解质</div>
-              <div class="report-meta">术前至术后约41小时</div>
+              <div class="report-meta">术前至术后约62小时</div>
             </div>
-            <span class="report-badge">随访</span>
+            <span class="report-badge red">Hb下降</span>
           </summary>
           <div class="report-body">
             <ul>
-              <li>血气Hb由14.7降至9.5 g/dL；最低9.2，需用血常规确认并结合出血、输液和输血记录。</li>
-              <li>离子钙1.18→最低0.88→0.99 mmol/L，仍偏低。</li>
-              <li>钾4.02→3.59→4.43 mmol/L；钠142.28、氯99.53，最近一次均在参考范围。</li>
+              <li>血气Hb由14.7→9.9→最新8.4 g/dL，Hct 29%→25%；需用血常规确认并结合出血、输液和输血记录。</li>
+              <li>离子钙1.18→最低0.88→0.98→最新1.06 mmol/L，仍略低于参考下限。</li>
+              <li>此前钾4.31、钠141.27、氯98.33 mmol/L曾在参考范围；最新血气未报告电解质。</li>
+            </ul>
+          </div>
+        </details>
+        <details class="report">
+          <summary>
+            <div>
+              <div class="report-title">肝功能</div>
+              <div class="report-meta">术后约45小时 · ALT / AST</div>
+            </div>
+            <span class="report-badge red">显著升高</span>
+          </summary>
+          <div class="report-body">
+            <ul>
+              <li>ALT 891、AST 806 U/L，AST/ALT 0.90，提示明显肝细胞损伤。</li>
+              <li>结合此前持续休克，需重点判断缺血缺氧性肝损伤，同时排查药物、感染等其他原因。</li>
+              <li>仍需胆红素、白蛋白、血糖、氨及动态转氨酶；INR还同时受凝血因子消耗和血浆输注影响。</li>
             </ul>
           </div>
         </details>
@@ -1229,9 +1267,9 @@
           <div class="question-summary-top">
             <div>
               <h3>查房沟通清单</h3>
-              <p>先问危及当前稳定性的6项，再补充器官功能和治疗计划。</p>
+              <p>先问危及当前稳定性的6项，再补充7项器官功能和治疗计划。</p>
             </div>
-            <span class="question-count" id="questionCount">0 / 12 已确认</span>
+            <span class="question-count" id="questionCount">0 / 13 已确认</span>
           </div>
           <div class="progress-track" aria-hidden="true">
             <div class="progress-value" id="questionProgress"></div>
@@ -1293,6 +1331,41 @@
           <div class="event-time">术后约41小时</div>
           <div class="event-title">乳酸降至3.25，酸中毒接近纠正</div>
           <div class="event-desc">但FiO₂50%时P/F仅158，呼吸支持需求仍高。</div>
+        </article>
+        <article class="event" style="--event-color: var(--green)">
+          <div class="event-time">术后约43小时25分</div>
+          <div class="event-title">凝血功能在血浆/凝血因子后部分改善</div>
+          <div class="event-desc">INR 2.11→1.43，PT 23→15.8秒，APTT 57.9→50.8秒；仍未恢复正常。</div>
+        </article>
+        <article class="event" style="--event-color: var(--red)">
+          <div class="event-time">术后约44小时52分</div>
+          <div class="event-title">肾损伤进展并出现显著肝细胞损伤</div>
+          <div class="event-desc">肌酐363、尿素17.8、CK8280、ALT891、AST806、IL-6 981；电解质暂时稳定。</div>
+        </article>
+        <article class="event" style="--event-color: var(--green)">
+          <div class="event-time">术后约49小时57分</div>
+          <div class="event-title">乳酸降至2.27，氧合小幅改善</div>
+          <div class="event-desc">P/F 158→181；但Hb降至8.8，轻度代谢性酸中毒和低离子钙仍存在。</div>
+        </article>
+        <article class="event" style="--event-color: var(--orange)">
+          <div class="event-time">术后约56小时47分</div>
+          <div class="event-title">乳酸回升至2.86，酸碱接近正常</div>
+          <div class="event-desc">pH7.369、HCO₃⁻24.2、BE−1.1；P/F184；Hb回升至9.9，iCa1.05仍低。</div>
+        </article>
+        <article class="event" style="--event-color: var(--red)">
+          <div class="event-time">术后约57小时08分</div>
+          <div class="event-title">APTT危急值76.1秒</div>
+          <div class="event-desc">参考21–45；报告备注“有危急值、结果已复查”。需排查抗凝与出血。</div>
+        </article>
+        <article class="event" style="--event-color: var(--orange)">
+          <div class="event-time">术后约61小时44分</div>
+          <div class="event-title">乳酸2.57，Hb再降至8.4</div>
+          <div class="event-desc">P/F176；酸碱仍接近正常（pH7.367、BE−2.8）；iCa1.06。</div>
+        </article>
+        <article class="event" style="--event-color: var(--red)">
+          <div class="event-time">术后约62小时04分</div>
+          <div class="event-title">APTT仍危急：72.4秒</div>
+          <div class="event-desc">较76.1略降但仍显著延长；CRRT抗凝、出血风险与输血决策需同步确认。</div>
         </article>
       </div>
     </section>
@@ -1425,7 +1498,22 @@
       { h: 21.53, label: "术后21h32m", sample: "动脉", ph: 7.528, pco2: 20.5, po2: 64.1, hco3: 16.7, be: -6.1, lactate: 7.35, fio2: 30, pf: 214, hb: 13.4, ca: .91 },
       { h: 27.10, label: "术后27h06m", sample: "动脉", ph: 7.458, pco2: 25.6, po2: 84.8, hco3: 17.7, be: -6.1, lactate: 6.55, fio2: 50, pf: 170, hb: 13.2, ca: .92 },
       { h: 31.47, label: "术后31h28m", sample: "动脉", ph: 7.397, pco2: 33.6, po2: 90.1, hco3: 20.2, be: -4.6, lactate: 5.82, fio2: 50, pf: 180, hb: 9.2, ca: .88 },
-      { h: 40.68, label: "术后40h41m", sample: "动脉", ph: 7.415, pco2: 33.8, po2: 79.2, hco3: 21.2, be: -3.4, lactate: 3.25, fio2: 50, pf: 158, hb: 9.5, ca: .99 }
+      { h: 40.68, label: "术后40h41m", sample: "动脉", ph: 7.415, pco2: 33.8, po2: 79.2, hco3: 21.2, be: -3.4, lactate: 3.25, fio2: 50, pf: 158, hb: 9.5, ca: .99 },
+      { h: 49.95, label: "术后49h57m", sample: "动脉", ph: 7.403, pco2: 32.7, po2: 90.6, hco3: 19.9, be: -4.8, lactate: 2.27, fio2: 50, pf: 181, hb: 8.8, ca: .98 },
+      { h: 56.78, label: "术后56h47m", sample: "动脉", ph: 7.369, pco2: 43.0, po2: 92.0, hco3: 24.2, be: -1.1, lactate: 2.86, fio2: 50, pf: 184, hb: 9.9, ca: 1.05 },
+      { h: 61.73, label: "术后61h44m", sample: "动脉", ph: 7.367, pco2: 40.1, po2: 87.9, hco3: 22.5, be: -2.8, lactate: 2.57, fio2: 50, pf: 176, hb: 8.4, ca: 1.06 }
+    ];
+
+    const labReadings = [
+      { h: -22.85, label: "术前22h51m", sample: "生化", creatinine: 121.8, urea: 10.99 },
+      { h: -18.85, label: "术前18h51m", sample: "凝血", inr: .93 },
+      { h: 2.87, label: "术后2h52m", sample: "生化", ck: 5657 },
+      { h: 19.05, label: "术后19h03m", sample: "凝血", inr: 2.11 },
+      { h: 19.73, label: "术后19h44m", sample: "生化", creatinine: 263, urea: 15.95 },
+      { h: 43.42, label: "术后43h25m", sample: "凝血", inr: 1.43 },
+      { h: 44.87, label: "术后44h52m", sample: "生化", creatinine: 363, urea: 17.80, ck: 8280, alt: 891, ast: 806, il6: 981 },
+      { h: 57.13, label: "术后57h08m", sample: "凝血", aptt: 76.1, critical: true },
+      { h: 62.07, label: "术后62h04m", sample: "凝血", aptt: 72.4, critical: true }
     ];
 
     const metricConfig = {
@@ -1435,25 +1523,29 @@
       be: { label: "碱剩余 BE", unit: "mmol/L", minRef: -3, maxRef: 3, color: "#7257a3", decimals: 1, better: "range" },
       pf: { label: "氧合指数 P/F", unit: "mmHg", minRef: 400, maxRef: 500, color: "#3978a8", decimals: 0, better: "up", arterialOnly: true },
       hb: { label: "血红蛋白 Hb", unit: "g/dL", minRef: 12, maxRef: 17.5, color: "#c76a16", decimals: 1, better: "range" },
-      ca: { label: "离子钙 iCa", unit: "mmol/L", minRef: 1.15, maxRef: 1.29, color: "#7257a3", decimals: 2, better: "range" }
+      ca: { label: "离子钙 iCa", unit: "mmol/L", minRef: 1.15, maxRef: 1.29, color: "#7257a3", decimals: 2, better: "range" },
+      creatinine: { label: "肌酐", unit: "μmol/L", minRef: 41, maxRef: 81, color: "#bd3b3b", decimals: 0, better: "down", source: "lab" },
+      inr: { label: "INR", unit: "", minRef: .94, maxRef: 1.2, color: "#c76a16", decimals: 2, better: "range", source: "lab" },
+      ck: { label: "肌酸激酶 CK", unit: "U/L", minRef: 33, maxRef: 192, color: "#7257a3", decimals: 0, better: "down", source: "lab" }
     };
 
     let selectedMetric = "lactate";
     let selectedRange = "all";
     const customKey = "perioperative-dashboard-custom-v1";
     const questionKey = "perioperative-dashboard-questions-v1";
+    const latestNonBloodGasReport = { h: 62.07, label: "术后62h04m", type: "凝血" };
     const doctorQuestions = [
       {
         id: "hemodynamics",
         group: "urgent",
         title: "现在的MAP和两种升压药剂量分别是多少？",
-        detail: "与上一班相比是在减量、持平还是加量？心率140是什么心律？"
+        detail: "探视时血压140/50、脉搏100；请确认连续趋势、与上一班相比减量多少，以及CRRT时的MAP目标。"
       },
       {
         id: "lactate",
         group: "urgent",
-        title: "最新乳酸是多少，下降速度是否达到医生预期？",
-        detail: "下一次复查时间和当前灌注目标是什么？"
+        title: "乳酸从2.27回升至2.86再至2.57，是否代表灌注再次恶化？",
+        detail: "还需结合升压药、尿量、皮肤循环及下一次乳酸判断哪些休克问题仍未解决？"
       },
       {
         id: "source-control",
@@ -1470,50 +1562,56 @@
       {
         id: "oxygenation",
         group: "urgent",
-        title: "FiO₂ 50%时P/F约158，氧合下降的原因是什么？",
-        detail: "目前呼吸机支持强度、肺部影像变化和未来拔管判断标准是什么？"
+        title: "FiO₂ 50%时P/F约176，呼吸支持能否开始下调？",
+        detail: "较181略降；目前肺部问题、呼吸机支持强度和未来拔管标准是什么？"
       },
       {
         id: "next-window",
         group: "urgent",
         title: "未来6–12小时最重要的观察目标是什么？",
-        detail: "哪些变化代表有效改善，哪些变化意味着需要升级治疗？最好、最可能和最坏情况分别是什么？"
+        detail: "尤其是APTT危急值、出血迹象、乳酸趋势和CRRT抗凝调整；最好、最可能和最坏情况分别是什么？"
       },
       {
         id: "kidney",
         group: "followup",
-        title: "肌酐和每小时尿量的最新趋势如何？",
-        detail: "钾、酸中毒和液体负荷是否稳定；达到什么条件会考虑CRRT？"
+        title: "CRRT准备解决的首要问题是什么？",
+        detail: "肌酐121.8→263→363、尿素17.8且过夜尿量300mL；请说明净液体平衡、初始净脱水量及停止标准。"
       },
       {
         id: "coagulation",
         group: "followup",
-        title: "补血浆后凝血指标是否改善？",
-        detail: "最新PT、INR、APTT、血小板、纤维蛋白原和FDP/D-二聚体是多少？"
+        title: "APTT危急值72.4秒，当前抗凝方案是否需要立即调整？",
+        detail: "76.1→72.4（参考21–45，已复查）；是否肝素/枸橼酸抗凝？血小板、FDP/D-二聚体、出血表现如何？"
       },
       {
         id: "bleeding",
         group: "followup",
-        title: "血红蛋白下降是否存在活动性出血？",
-        detail: "血常规Hb、腹腔引流量、伤口和床旁影像如何；输血判断依据是什么？"
+        title: "血气Hb降至8.4，是否存在活动性出血或稀释？",
+        detail: "结合APTT显著延长，请确认血常规Hb、腹腔引流量、伤口和床旁影像，以及当前输血判断依据。"
       },
       {
         id: "infection",
         group: "followup",
         title: "培养和抗感染治疗进展如何？",
-        detail: "血培养/腹腔培养是否有结果，抗菌药是否覆盖肠源性感染，PCT趋势如何解释？"
+        detail: "最新IL-6 981、此前PCT146.4；培养是否有结果，抗菌药是否覆盖肠源感染并按CRRT调整剂量？"
+      },
+      {
+        id: "liver",
+        group: "followup",
+        title: "ALT891、AST806主要考虑缺血缺氧性肝损伤吗？",
+        detail: "转氨酶趋势、胆红素、血糖、白蛋白和氨如何？是否还需排查药物或其他肝损伤原因？"
       },
       {
         id: "heart",
         group: "followup",
-        title: "心率快和肌酶升高是否涉及心肌损伤？",
-        detail: "动态肌钙蛋白、心电图及床旁心脏超声结果如何？"
+        title: "CK升至8280是否存在持续肌损伤或横纹肌溶解？",
+        detail: "CK-MB虽降至132.6仍高；尿肌红蛋白、动态肌钙蛋白、心电图及床旁心脏超声如何？"
       },
       {
         id: "calcium",
         group: "followup",
-        title: "离子钙0.99是否继续纠正？",
-        detail: "镁、磷及输血相关枸橼酸负荷是否同时监测？"
+        title: "离子钙1.06是否继续纠正？",
+        detail: "若CRRT使用枸橼酸抗凝，补钙目标、监测频率以及枸橼酸蓄积的判断标准是什么？"
       }
     ];
 
@@ -1536,8 +1634,8 @@
     }
 
     function filteredReadings(metric) {
-      const all = allReadings();
-      const latest = all.at(-1)?.h ?? 0;
+      const all = metricConfig[metric].source === "lab" ? labReadings : allReadings();
+      const latest = Math.max(allReadings().at(-1)?.h ?? 0, labReadings.at(-1)?.h ?? 0);
       return all.filter(d => {
         if (d[metric] == null || d.quality === "uncertain") return false;
         if (metricConfig[metric].arterialOnly && d.sample !== "动脉") return false;
@@ -1749,7 +1847,10 @@
     function updateLatest() {
       const latest = allReadings().filter(d => d.sample === "动脉" && d.quality !== "uncertain").at(-1);
       if (!latest) return;
-      document.getElementById("latestTimePill").textContent = `最新：${latest.label || relativeLabel(latest.h)}`;
+      const bloodGasIsNewer = latest.h > latestNonBloodGasReport.h;
+      document.getElementById("latestTimePill").textContent = bloodGasIsNewer
+        ? `最新：${latest.label || relativeLabel(latest.h)}`
+        : `最新化验：${latestNonBloodGasReport.label}`;
       if (latest.lactate != null) document.getElementById("latestLactate").textContent = Number(latest.lactate).toFixed(2);
       if (latest.pf != null) document.getElementById("latestPf").textContent = Math.round(latest.pf);
       if (latest.ph != null) document.getElementById("latestPh").textContent = Number(latest.ph).toFixed(3);
@@ -1778,7 +1879,7 @@
       const container = document.getElementById("questionGroups");
       const groups = [
         { id: "urgent", label: "优先确认 · 6项", className: "" },
-        { id: "followup", label: "器官功能与治疗计划 · 6项", className: "followup" }
+        { id: "followup", label: "器官功能与治疗计划 · 7项", className: "followup" }
       ];
       container.innerHTML = groups.map(group => {
         const items = doctorQuestions.filter(question => question.group === group.id).map(question => `
